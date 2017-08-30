@@ -95,7 +95,11 @@
 						$titleProd = $maisvendidos['Produto']['Descricao'];
 						$brandProd = $maisvendidos['Produto']['Marca']['Descricao'];
 						$priceProd = $maisvendidos['Produto']['PrecoVigente'];
+						$oldPriceProdArray = $maisvendidos['Produto']['PrecoDePor'];
+						$oldPriceProd = $maisvendidos['Produto']['PrecoDePor']['PrecoDe'];
 						$soldProd = $maisvendidos['Produto']['Esgotado'];
+						$promoNew = $maisvendidos['Produto']['Lancamento'];
+						$promoPercentage = $maisvendidos['Produto']['PercentualDesconto'];
 				?>
 					<div class="product-item col-xs-12 col-sm-4 col-lg-3">
 						<div class="inner-prod <?= $label ?>">
@@ -103,9 +107,9 @@
 								<a href="/produto?id=<?= $idProd ?>">
 									<img src="<?= $imgProd ?>" />
 								</a>
-								<?php if (!empty($maisvendidos['Produto']['PercentualDesconto']) && $maisvendidos['Produto']['PercentualDesconto'] > 0) : ?>
-									<span class="p-promo percentage"><?= floor($maisvendidos['Produto']['PercentualDesconto']) ?>% OFF</span>
-								<?php elseif(!empty($maisvendidos['Produto']['Lancamento'])) : ?>
+								<?php if ($promoPercentage && $promoPercentage != 0) : ?>
+									<span class="p-promo percentage"><?= floor($promoPercentage) ?>% OFF</span>
+								<?php elseif($promoNew) : ?>
 									<span class="p-promo new">New</span>
 								<?php endif; ?>
 							</figure>
@@ -115,15 +119,16 @@
 								</h3>
 								<span class="brand"><?= $brandProd ?></span>
 								<a href="/produto?id=<?= $idProd ?>" class="box-price">
-									<?= (!empty($maisvendidos['Produto']['PrecoDePor'])) ? '<s class="price-old">' . formatar_moeda($maisvendidos['Produto']['PrecoDePor']['PrecoDe']) . '</s>' : '' ?><?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
+									<?php 
+										if($oldPriceProdArray && $oldPriceProd > 0) {
+											echo '<s class="price-old">' . formatar_moeda($oldPriceProd) . '</s>';
+										}
+									?>
+									<?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
 									<?php
 										$parcelamento = getRest(str_replace(['{IDProduto}', '{valorProduto}'], [$idProd, $priceProd], $endPoint['parcelamento']));
-										$contParc = 1;
-										foreach ((array) $parcelamento as $parcela) :
-											if ($parcela['Numero'] === 6) :
+										echo '<span class="installment">' . end($parcelamento)['Descricao'] . '</span>';
 									?>
-										<span class='installment'><?= $parcela['Numero'] ?> x <strong><?= formatar_moeda($parcela['Valor']) ?></strong> sem juros</span>
-									<?php endif; $contParc++; endforeach; ?>
 								</a>
 								<div class="box-btn">
 									<?php if(!$soldProd) : ?>
@@ -149,16 +154,20 @@
 				$titleProd = $prodShowcase['Produto']['Descricao'];
 				$brandProd = $prodShowcase['Produto']['Marca']['Descricao'];
 				$priceProd = $prodShowcase['Produto']['PrecoVigente'];
+				$oldPriceProdArray = $prodShowcase['Produto']['PrecoDePor'];
+				$oldPriceProd = $prodShowcase['Produto']['PrecoDePor']['PrecoDe'];
 				$soldProd = $prodShowcase['Produto']['Esgotado'];
+				$promoNew = $prodShowcase['Produto']['Lancamento'];
+				$promoPercentage = $prodShowcase['Produto']['PercentualDesconto'];
 			?><div class="product-item col-xs-12 col-sm-4 col-lg-3">
 					<div class="inner-prod <?= $label ?>">
 						<figure class="product-img">
 							<a href="/produto?id=<?= $idProd ?>">
 								<img src="<?= $imgProd ?>" />
 							</a>
-							<?php if (!empty($maisvendidos['Produto']['PercentualDesconto']) && $maisvendidos['Produto']['PercentualDesconto'] > 0) : ?>
-								<span class="p-promo percentage"><?= floor($maisvendidos['Produto']['PercentualDesconto']) ?>% OFF</span>
-							<?php elseif(!empty($maisvendidos['Produto']['Lancamento'])) : ?>
+							<?php if ($promoPercentage && $promoPercentage != 0) : ?>
+								<span class="p-promo percentage"><?= floor($promoPercentage) ?>% OFF</span>
+							<?php elseif($promoNew) : ?>
 								<span class="p-promo new">New</span>
 							<?php endif; ?>
 						</figure>
@@ -168,15 +177,16 @@
 							</h3>
 							<span class="brand"><?= $brandProd ?></span>
 							<a href="/produto?id=<?= $idProd ?>" class="box-price">
-								<?= (!empty($maisvendidos['Produto']['PrecoDePor'])) ? '<s class="price-old">' . formatar_moeda($maisvendidos['Produto']['PrecoDePor']['PrecoDe']) . '</s>' : '' ?><?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
+								<?php 
+									if($oldPriceProdArray && $oldPriceProd > 0) {
+										echo '<s class="price-old">' . formatar_moeda($oldPriceProd) . '</s>';
+									}
+								?>
+								<?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
 								<?php
 									$parcelamento = getRest(str_replace(['{IDProduto}', '{valorProduto}'], [$idProd, $priceProd], $endPoint['parcelamento']));
-									$contParc = 1;
-									foreach ((array) $parcelamento as $parcela) :
-										if ($parcela['Numero'] === 6) :
+									echo '<span class="installment">' . end($parcelamento)['Descricao'] . '</span>';
 								?>
-									<span class='installment'><?= $parcela['Numero'] ?> x <strong><?= formatar_moeda($parcela['Valor']) ?></strong> sem juros</span>
-								<?php endif; $contParc++; endforeach; ?>
 							</a>
 							<div class="box-btn">
 								<?php if(!$soldProd) : ?>

@@ -56,16 +56,19 @@
 				$titleProd = $produtoBusca['Descricao'];
 				$brandProd = $produtoBusca['Marca'];
 				$priceProd = $produtoBusca['PrecoVigente'];
+				$oldPriceProd = $produtoBusca['PrecoDe'];
 				$soldProd = $produtoBusca['Esgotado'];
+				$promoNew = $produtoBusca['Lancamento'];
+				$promoPercentage = $produtoBusca['PercentualDesconto'];
 ?><li class="product-item col-xs-12 col-sm-4 col-lg-3">
 	<div class="inner-prod">
 		<figure class="product-img">
 			<a href="/produto?id=<?= $idProd ?>">
 				<img src="<?= $imgProd ?>" />
 			</a>
-			<?php if (!empty($produtoBusca['PrecoDe']) && $produtoBusca['PrecoDe'] > 0) : ?>
-				<span class="p-promo percentage"><?= floor($produtoBusca['PercentualDesconto']) ?>% OFF</span>
-			<?php elseif(!empty($produtoBusca['Lancamento'])) : ?>
+			<?php if ($promoPercentage && $promoPercentage != 0) : ?>
+				<span class="p-promo percentage"><?= floor($promoPercentage) ?>% OFF</span>
+			<?php elseif($promoNew) : ?>
 				<span class="p-promo new">New</span>
 			<?php endif; ?>
 		</figure>
@@ -75,7 +78,16 @@
 			</h3>
 			<span class="brand"><?= $brandProd ?></span>
 			<a href="/produto?id=<?= $idProd ?>" class="box-price">
-				<?= (!empty($produtoBusca['PrecoDe'])) ? '<s class="price-old">' . formatar_moeda($produtoBusca['PrecoDe']) . '</s>' : '' ?><?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
+				<?php 
+					if($oldPriceProd && $oldPriceProd > 0) {
+						echo '<s class="price-old">' . formatar_moeda($oldPriceProd) . '</s>';
+					}
+				?>
+				<?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
+				<?php
+					//$parcelamento = getRest(str_replace(['{IDProduto}', '{valorProduto}'], [$idProd, $priceProd], $endPoint['parcelamento']));
+					//echo '<span class="installment">' . end($parcelamento)['Descricao'] . '</span>';
+				?>
 			</a>
 			<div class="box-btn">
 				<?php if(!$soldProd) : ?>

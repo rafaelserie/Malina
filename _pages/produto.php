@@ -384,7 +384,11 @@
 						$titleProd = $produto['Descricao'];
 						$brandProd = $produto['Marca']['Descricao'];
 						$priceProd = $produto['PrecoVigente'];
+						$oldPriceProdArray = $produto['PrecoDePor'];
+						$oldPriceProd = $produto['PrecoDePor']['PrecoDe'];
 						$soldProd = $produto['Esgotado'];
+						$promoNew = $produto['Lancamento'];
+						$promoPercentage = $produto['PercentualDesconto'];
 				?>
 					<div class="product-item col-md-3">
 						<div class="inner-prod <?= $label ?>">
@@ -392,9 +396,9 @@
 								<a href="/produto?id=<?= $idProd ?>">
 									<img src="<?= $imgProd ?>" />
 								</a>
-								<?php if (!empty($produto['PercentualDesconto']) && $produto['PercentualDesconto'] > 0) : ?>
-									<span class="p-promo percentage"><?= floor($produto['PercentualDesconto']) ?>% OFF</span>
-								<?php elseif(!empty($produto['Lancamento'])) : ?>
+								<?php if ($promoPercentage && $promoPercentage != 0) : ?>
+									<span class="p-promo percentage"><?= floor($promoPercentage) ?>% OFF</span>
+								<?php elseif($promoNew) : ?>
 									<span class="p-promo new">New</span>
 								<?php endif; ?>
 							</figure>
@@ -404,15 +408,16 @@
 								</h3>
 								<span class="brand"><?= $brandProd ?></span>
 								<a href="/produto?id=<?= $idProd ?>" class="box-price">
-									<?= (!empty($produto['PrecoDePor'])) ? '<s class="price-old">' . formatar_moeda($produto['PrecoDePor']['PrecoDe']) . '</s>' : '' ?><?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
+									<?php 
+										if($oldPriceProdArray && $oldPriceProd > 0) {
+											echo '<s class="price-old">' . formatar_moeda($oldPriceProd) . '</s>';
+										}
+									?>
+									<?= '<span class="price">' . formatar_moeda($priceProd) . '</span>' ?>
 									<?php
 										$parcelamento = getRest(str_replace(['{IDProduto}', '{valorProduto}'], [$idProd, $priceProd], $endPoint['parcelamento']));
-										$contParc = 1;
-										foreach ((array) $parcelamento as $parcela) :
-											if ($parcela['Numero'] === 6) :
+										echo '<span class="installment">' . end($parcelamento)['Descricao'] . '</span>';
 									?>
-										<span class='installment'><?= $parcela['Numero'] ?> x <strong><?= formatar_moeda($parcela['Valor']) ?></strong> sem juros</span>
-									<?php endif; $contParc++; endforeach; ?>
 								</a>
 								<div class="box-btn">
 									<?php if(!$soldProd) : ?>
