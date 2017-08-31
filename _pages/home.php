@@ -100,6 +100,7 @@
 						$soldProd = $maisvendidos['Produto']['Esgotado'];
 						$promoNew = $maisvendidos['Produto']['Lancamento'];
 						$promoPercentage = $maisvendidos['Produto']['PercentualDesconto'];
+						if($maisvendidos['Produto']) :
 				?>
 					<div class="product-item col-xs-12 col-sm-4 col-lg-3">
 						<div class="inner-prod <?= $label ?>">
@@ -140,7 +141,7 @@
 							</div>
 						</div>
 					</div>
-				<?php endforeach; ?>
+				<?php endif; endforeach; ?>
 			</div>
 		</div>
 	</section>
@@ -159,6 +160,7 @@
 				$soldProd = $prodShowcase['Produto']['Esgotado'];
 				$promoNew = $prodShowcase['Produto']['Lancamento'];
 				$promoPercentage = $prodShowcase['Produto']['PercentualDesconto'];
+				if($prodShowcase['Produto']) :
 			?><div class="product-item col-xs-12 col-sm-4 col-lg-3">
 					<div class="inner-prod <?= $label ?>">
 						<figure class="product-img">
@@ -197,7 +199,7 @@
 							</div>
 						</div>
 					</div>
-				</div><?php endforeach; ?>
+				</div><?php endif; endforeach; ?>
 		</div>
 	</section>
 
